@@ -28,7 +28,7 @@ public class Ticket {
             "Bus No.: ",
             "Bus Type: ",
             "Total Seats: ",
-            " Available Seats: ",
+            "Available Seats: ",
             "Departure City: ",
             "Arrival City: ",
             "Departure Time: ",
