@@ -114,4 +114,22 @@ public class DatabaseOperations {
 
                             }
             // Method to fetch Bus data from database
-            public static int getBusFare(int )
+            public static int getBusFare(int id) throws SQLException {
+                conn = ds.getConnection();
+                PreparedStatement ps = conn.prepareStatement("SELECT fare FROM buses WHERE bus_id=" + id + ";");
+
+                ResultSet rs = ps.executeQuery();
+                int fare = rs.getInt("fare");
+
+                rs.close();
+                ps.close();
+                conn.close();
+                return fare;
+            }
+
+            /**
+             * ===== USER OPERATIONS =====
+             */
+
+             // Method to add User into the database
+            public static void addUser(int id, String name, String email, String password, String phone, String address) throws SQLException
