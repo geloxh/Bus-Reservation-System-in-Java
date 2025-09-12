@@ -21,7 +21,7 @@ import javax.swing.JTable;
 public class AdminPanel {
 
     private JFrame frame;
-    private JTextField busIdfield;
+    private JTextField busIdField;
     private JTextField busNoField;
     private JTextField busTypeField;
     private JTextField totalSeatsField;
@@ -54,9 +54,9 @@ public class AdminPanel {
         tablesComboBox.addItem("Reservation");
         deletePanel.add(tablesComboBox);
 
-        deletionIdfield = new JTextField();
+        deletionIdField = new JTextField();
         deletePanel.add(deletionIdField);
-        deletionIDfield.setColumns(10);
+        deletionIdField.setColumns(10);
 
         JButton deleteButton = new JButton("Delete");
         deleteButton.addActionListener(new ActionListener() {
@@ -85,7 +85,7 @@ public class AdminPanel {
         deletePanel.add(deleteButton);
 
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
-        frame.getContentPane().add(tabbedPane();
+        frame.getContentPane().add(tabbedPane);
         
         JScrollPane busScrollPane = new JScrollPane();
         tabbedPane.addTab("Buses", null, busScrollPane, null);
@@ -112,7 +112,7 @@ public class AdminPanel {
                 "ID", "Name", "E-Mail", "Password", "Phone No.", "Address"
             }
         ));
-        reservationScrollPane.setViewportView(reservationTable);
+        reservationsScrollPane.setViewportView(reservationTable);
 
         JPanel busPanel = new JPanel();
         tabbedPane.addTab("Add Bus", null, busPanel, null);
@@ -187,7 +187,47 @@ public class AdminPanel {
         fareField = new JTextField();
         fareField.setColumns(10);
         busPanel.add(fareField);
-        )
+        
+        JButton btnNewButton = new JButton("Add Bus");
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    DatabaseOperations.addBus(Integer.valueOf(busIdField.getText()), 
+                    busNoField.getText(), busTypeField.getText(), 
+                    Integer.valueOf(totalSeatsField.getText()), 
+                    Integer.valueOf(availableSeatsField.getText()),
+                    depCityField.getText(),
+                    arrCityField.getText(),
+                    depTimeField.getText(),
+                    arrTimeField.getText(),
+                    Integer.valueOf(fareField.getText()));
+
+                    DatabaseOperations.loadData((DefaultTableModel)busTable.getModel(), "buses");
+                    JOptionPane.showMessageDialog(btnNewButton, "Bus Added Successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                } catch (NumberFormatException e1) {
+                    JOptionPane.showMessageDialog(btnNewButton, "Please Enter Only Numeric Value In ID \nSeats \nFare", "Invalid Value",
+                    JOptionPane.ERROR_MESSAGE);
+                    e1.printStackTrace();
+                } catch (SQLException e1) {
+                    JOptionPane.showMessageDialog(btnNewButton, "Can't add the bus\n" + e1.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        JLabel fareLabel_1 = new JLabel("");
+        busPanel.add(fareLabel_1);
+        busPanel.add(btnNewButton);
+        frame.setVisible(true);
+
+        try {
+            DatabaseOperations.loadData((DefaultTableModel)busTable.getModel(), "Buses");
+            DatabaseOperations.loadData((DefaultTableModel)reservationTable.getModel(), "Reservations");
+            DatabaseOperations.loadData((DefaultTableModel)userTable.getModel(), "Users");
+        } catch (SQLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
 
     }
 }
