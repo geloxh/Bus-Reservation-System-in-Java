@@ -83,7 +83,7 @@ public class Register {
         btnBack.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                UserLogin userLogin = new UserLogin();
+                userLogin();
             }
         });
         frame.getContentPane().add(btnBack);
@@ -108,5 +108,9 @@ public class Register {
         });
         frame.getContentPane().add(btnRegister);
         frame.setVisible(true);
+    }
+
+    private void userLogin() {
+        new UserLogin();
     }
 }
