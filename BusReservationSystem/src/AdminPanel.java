@@ -32,9 +32,9 @@ public class AdminPanel {
     private JTextField arrTimeField;
     private JTextField fareField;
     private JTextField deletionIdField;
-    private JTextField busTable;
-    private JTextField userTable;
-    private JTextField reservationTable;
+    private JTable busTable;
+    private JTable userTable;
+    private JTable reservationTable;
 
     AdminPanel() {
 
@@ -62,17 +62,11 @@ public class AdminPanel {
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    DatabaseOperations.delete((String)tablesComboBox.getSelectedItem(), Integer.valueOf(deletionIDfield.getText()));
+                    DatabaseOperations.delete((String)tablesComboBox.getSelectedItem(), Integer.valueOf(deletionIdField.getText()));
                     JOptionPane.showMessageDialog(deleteButton, "Deleted Successfully!");
-                try {
                     DatabaseOperations.loadData((DefaultTableModel)busTable.getModel(), "Buses");
                     DatabaseOperations.loadData((DefaultTableModel)reservationTable.getModel(), "Reservations");
-                    DatabaseOperations.loadData((DefaultTableModel)userTable.getModel(), "users");
-                } catch (SQLException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-                }
-
+                    DatabaseOperations.loadData((DefaultTableModel)userTable.getModel(), "Users");
                 } catch (NumberFormatException e1) {
                     JOptionPane.showMessageDialog(deleteButton, "Invalid ID!");
                     e1.printStackTrace();
@@ -110,6 +104,19 @@ public class AdminPanel {
             },
             new String[] {
                 "ID", "Name", "E-Mail", "Password", "Phone No.", "Address"
+            }
+        ));
+        usersScrollPane.setViewportView(userTable);
+
+        JScrollPane reservationsScrollPane = new JScrollPane();
+        tabbedPane.addTab("Reservations", null, reservationsScrollPane, null);
+
+        reservationTable = new JTable();
+        reservationTable.setModel(new DefaultTableModel(
+            new Object[][] {
+            },
+            new String[] {
+                "ID", "Bus ID", "User ID", "Seats"
             }
         ));
         reservationsScrollPane.setViewportView(reservationTable);
