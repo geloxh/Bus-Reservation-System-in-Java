@@ -57,7 +57,7 @@ public class UserLogin {
                 try {
                     if (DatabaseOperations.validatePassword(idField.getText(), new String(passwordField.getPassword()))) {
                         frame.dispose();
-                        Reservation reservation = new Reservation();
+                        reservation();
                     } else {
                         JOptionPane.showMessageDialog(btnLogin, "ID or Password does not match", "InvalidID/Password", JOptionPane.ERROR_MESSAGE);
                     }
@@ -72,7 +72,7 @@ public class UserLogin {
         btnRegister.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 frame.dispose();
-                Register register = new Register();
+                register();
             }
         });
 
@@ -82,5 +82,13 @@ public class UserLogin {
         btnRegister.setBounds(145, 208, 150, 50);
         frame.getContentPane().add(btnRegister);
         frame.setVisible(true);
+    }
+
+    private void reservation() {
+        new Reservation();
+    }
+
+    private void register() {
+        new Register();
     }
 }
