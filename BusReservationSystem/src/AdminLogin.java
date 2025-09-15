@@ -61,7 +61,7 @@ public class AdminLogin {
             public void actionPerformed(ActionEvent e) {
                 if (adminNameField.getText().equals(adminName) && password.equals(new String(passwordField.getPassword()))) {
                     frame.dispose();
-                    AdminPanel ap = new AdminPanel();
+                    adminPanel();
                 } else {
                     JOptionPane.showMessageDialog(btnLogin, "Incorrect Username or Password");;
                 }
@@ -70,5 +70,9 @@ public class AdminLogin {
         frame.getContentPane().add(btnLogin);
         frame.setVisible(true);
 
+    }
+
+    private void adminPanel() {
+        new AdminPanel();
     }
 }
