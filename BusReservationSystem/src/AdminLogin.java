@@ -22,7 +22,7 @@ public class AdminLogin {
     private final String adminName = "ITAdmin";
     private final String password = "admin123";
 
-    public AdminLogin {
+    public AdminLogin() {
         initialize();
     }
 
