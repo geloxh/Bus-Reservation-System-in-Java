@@ -108,7 +108,7 @@ public class Reservation {
                 try {
 
                     String[] data = DatabaseOperations.getReservation(Integer.valueOf(idTextField.getText()));
-                    Ticket t = new Ticket(data);
+                    showTicketDetails(data);
 
                 } catch (NumberFormatException e1) {
                     
@@ -129,7 +129,7 @@ public class Reservation {
         JButton btnBook = new JButton("Book");
         btnBook.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String uid = (String)uiComboBox.getSelectedItem();
+                String uid = (String)uidComboBox.getSelectedItem();
                 uid = uid.substring(0, uid.indexOf("|"));
                 String bid = (String)bidComboBox.getSelectedItem();
                 bid = bid.substring(0, bid.indexOf("|"));
@@ -139,7 +139,7 @@ public class Reservation {
                         DatabaseOperations.addReservation(Integer.valueOf(idTextField.getText()),
                                                                             Integer.valueOf(uid),
                                                                             Integer.valueOf(bid),
-                                                            Integer.valueOf(totalFareArea.getText().subString(3)),
+                                                            Integer.valueOf(totalFareArea.getText().substring(3)),
                                                             (Integer)seatSpinner.getValue(),
                                                             dateField.getText());
                         JOptionPane.showMessageDialog(btnBook, "Booked Successfully", "Success", JOptionPane.INFORMATION_MESSAGE);
@@ -174,5 +174,9 @@ public class Reservation {
 
             e1.printStackTrace();
         }
+    }
+
+    private void showTicketDetails(String[] data) {
+        new Ticket(data);
     }
 }
