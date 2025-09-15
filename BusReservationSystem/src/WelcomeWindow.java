@@ -52,7 +52,7 @@ public class WelcomeWindow {
         frmBusReservationSystem.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frmBusReservationSystem.getContentPane().setLayout(null);
 
-        JLabel lblWelcome = new JFrame("Welcome to Bus Reservation System");
+        JLabel lblWelcome = new JLabel("Welcome to Bus Reservation System");
         lblWelcome.setForeground(new Color(255, 255, 255));
         lblWelcome.setBounds(0, 0, 440, 35);
         lblWelcome.setFont(new Font("Jua", Font.BOLD, 20));
@@ -69,9 +69,9 @@ public class WelcomeWindow {
         btnAdmin.addActionListener(new ActionListener() {
 
             @Override
-            public void actionPeformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 frmBusReservationSystem.dispose();
-                AdminLogin adminLogin = new AdminLogin();
+                adminLogin();
 
             }
             
@@ -86,10 +86,18 @@ public class WelcomeWindow {
             public void actionPerformed(ActionEvent e) {
 
                 frmBusReservationSystem.dispose();
-                UserLogin userLogin = new UserLogin();
+                userLogin();
 
             }
         });
         frmBusReservationSystem.getContentPane().add(btnUser);
+    }
+
+    private void adminLogin() {
+        new AdminLogin();
+    }
+
+    private void userLogin() {
+        new UserLogin();
     }
 }
