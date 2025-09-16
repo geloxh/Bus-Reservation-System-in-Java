@@ -25,6 +25,7 @@ public class WelcomeWindow {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
+                    DatabaseOperations.dbInit();
                     WelcomeWindow window = new WelcomeWindow();
                     window.frmBusReservationSystem.setVisible(true);
                 } catch (Exception e) {

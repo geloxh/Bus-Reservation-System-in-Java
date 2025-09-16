@@ -22,7 +22,7 @@ public class DatabaseOperations {
         
         try {
             ds = new SQLiteDataSource();
-            ds.setUrl("jdbc:sqlite:BusReservationSystem/lib/Bus.db");
+            ds.setUrl("jdbc:sqlite:BusReservationSystem/lib/BRS.db"); // The db file should automatically generate when the program runs for the first time
         } catch ( Exception e ) {
             e.printStackTrace();
             
