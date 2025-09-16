@@ -22,7 +22,7 @@ public class DatabaseOperations {
         
         try {
             ds = new SQLiteDataSource();
-            ds.setUrl("jdbc:sqlite:BusDB.db");
+            ds.setUrl("jdbc:sqlite:BusReservationSystem/lib/Bus.db");
         } catch ( Exception e ) {
             e.printStackTrace();
             
@@ -73,7 +73,7 @@ public class DatabaseOperations {
              statement.close();
            conn.close();
            
-        }catch ( SQLException e ) {
+        } catch ( SQLException e ) {
             e.printStackTrace();
             System.exit( 0 );
         }
@@ -82,7 +82,7 @@ public class DatabaseOperations {
                 if (conn != null) {
                     conn.close();
                 }
-            }catch (SQLException e) {
+            } catch (SQLException e) {
                 System.err.println(e);
               }
         
@@ -96,10 +96,10 @@ public class DatabaseOperations {
      * 
      */
     //  Method to add Buses into the database
-    public static void addBus(int id,String number,String type,int seats,int availableSeats,
-                                String depCity,String arrCity,String depTime,String arrTime,int fare) throws SQLException {
+    public static void addBus(int id, String number, String type, int seats, int availableSeats,
+                                String depCity, String arrCity, String depTime, String arrTime, int fare) throws SQLException {
         conn = ds.getConnection();
-        PreparedStatement ps =conn.prepareStatement("INSERT INTO "
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO "
                                                     + "buses(bus_id,bus_number,bus_type,total_seats,available_seats,"
                                                     + "departure_city,arrival_city,departure_time,arrival_time,fare) "
                                                     + "VALUES(?,?,?,?,?,?,?,?,?,?)");
@@ -123,11 +123,14 @@ public class DatabaseOperations {
     //  Method to fetch Bus data from the database
     public static int getBusFare(int id) throws SQLException {
         conn = ds.getConnection();
-        PreparedStatement ps =conn.prepareStatement("SELECT fare FROM buses WHERE bus_id ="+id+";");
+        PreparedStatement ps = conn.prepareStatement("SELECT fare FROM buses WHERE bus_id ="+id+";");
         
         ResultSet rs = ps.executeQuery();
-        int fare =  rs.getInt("fare");
-        
+        int fare = 0;
+        if (rs.next()) {
+            fare =rs.getInt("fare");
+        }
+
         rs.close();
         ps.close();
         conn.close();
@@ -141,9 +144,9 @@ public class DatabaseOperations {
      */
     
     //  Method to add User into the database
-    public static void addUser(int id,String name,String email,String password,String phone,String address) throws SQLException {
+    public static void addUser(int id, String name, String email, String password, String phone, String address) throws SQLException {
         conn = ds.getConnection();
-        PreparedStatement ps =conn.prepareStatement("INSERT INTO "
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO "
                                                     + "users(user_id,name,email,password,phone_number,address)"
                                                     + "VALUES(?,?,?,?,?,?)");
         ps.setInt(1, id);
@@ -159,15 +162,15 @@ public class DatabaseOperations {
     }
     
     //  Method to fetch Email and Password from the database and validate it 
-    public static boolean validatePassword(String id,String password) throws SQLException {
+    public static boolean validatePassword(String id, String password) throws SQLException {
         conn = ds.getConnection();
         String sql = "SELECT user_id,password FROM users WHERE user_id = ?;";
         PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1,id );
+        ps.setString(1, id );
         ResultSet rs =  ps.executeQuery();
         
         
-        if (id.equals(rs.getString("user_id"))  && password.equals(rs.getString("password"))) {
+        if (rs.next() &&id.equals(rs.getString("user_id"))  && password.equals(rs.getString("password"))) {
             rs.close();
             ps.close();
             conn.close();
@@ -185,9 +188,9 @@ public class DatabaseOperations {
      * ----------------------------------- Reservations Operations--------------------------------------------------------
      */
     //  Method to add Reservation into the database
-    public static void addReservation(int id,int userID,int busID,int reservedSeats,int totalFare,String reservationDate)throws SQLException {
+    public static void addReservation(int id, int userID, int busID, int reservedSeats, int totalFare, String reservationDate)throws SQLException {
         conn = ds.getConnection();
-        PreparedStatement ps =conn.prepareStatement("INSERT INTO "
+        PreparedStatement ps = conn.prepareStatement("INSERT INTO "
                                                     + "reservations(reservation_id,user_id,bus_id,reserved_seats,total_fare,reservation_date)"
                                                     + "VALUES(?,?,?,?,?,?);");
         ps.setInt(1, id);
@@ -205,7 +208,7 @@ public class DatabaseOperations {
     //  Method to fetch Reservation data from the database
     public static String[] getReservation(int id) throws SQLException {
         conn = ds.getConnection();
-        PreparedStatement ps =conn.prepareStatement("SELECT reservation_id,users.user_id,buses.bus_id,\n"
+        PreparedStatement ps = conn.prepareStatement("SELECT reservation_id,users.user_id,buses.bus_id,\n"
                 + "reserved_seats,total_fare,\n"
                 + "reservation_date,name,email,phone_number,\n"
                 + "address,bus_number,bus_type,total_seats,\n"
@@ -223,12 +226,11 @@ public class DatabaseOperations {
         ResultSet rs = ps.executeQuery(); 
         String[] data = new String[18];
         
-        for (int j = 0; j < data.length; j++) {
-            data[j] = rs.getString(j+1);
+        if (rs.next()) {
+            for (int j = 0; j < data.length; j++) {
+                data[j] = rs.getString(j+1);
+            }
         }
-        
-    
-        
         
         ps.close();
         conn.close();
@@ -237,13 +239,13 @@ public class DatabaseOperations {
     }
     
     //  Method to update the comboBoxes with data from the database
-    public static void updateCombox(String table,JComboBox<String> cbx) throws SQLException {
-        cbx.removeAll();
+    public static void updateCombox(String table, JComboBox<String> cbx) throws SQLException {
+        cbx.removeAllItems();
         conn = ds.getConnection();
-        String sql = "SELECT * FROM "+table+";";
+        String sql = "SELECT * FROM " + table + ";";
         PreparedStatement ps = conn.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
-        if(table.equals("users")) {
+        if(table.equalsIgnoreCase("users")) {
             while(rs.next()) {
                 cbx.addItem(rs.getString("user_id") +"|"+ rs.getString("name"));
             }
@@ -260,12 +262,21 @@ public class DatabaseOperations {
     }
 
     //  Method to delete any specific record from a specific table 
-    public static void delete(String table,int id) throws SQLException {
+    public static void delete(String table, int id) throws SQLException {
         conn = ds.getConnection();
-        String sql = "DELETE  FROM "+table+"s WHERE "+table+"_id = ?";
-        if (table.equals("bus")) {
-             sql = "DELETE  FROM buses WHERE "+table+"_id = ?";
+        String tableName = getTableName(table);
+        String idColumn;
+        if (tableName.equalsIgnoreCase("buses")) {
+            idColumn = "bus_id";
+        } else if (tableName.equalsIgnoreCase("users")) {
+            idColumn = "user_id";
+        } else if (tableName.equalsIgnoreCase("reservations")) {
+            idColumn = "reservation_id";
+        } else {
+            conn.close();
+            throw new SQLException("Invalid table name: " + table);
         }
+        String sql = "DELETE FROM " + tableName + " WHERE " + idColumn + " = ?";
         PreparedStatement ps = conn.prepareStatement(sql);
         ps.setInt(1, id);
         ps.executeUpdate();
@@ -273,12 +284,16 @@ public class DatabaseOperations {
         ps.close();
         conn.close();
     }
+
+    private static String getTableName(String table) {
+        return table;
+    }
     
     //  Method to Load Data from the database into the table
-    public static void loadData(DefaultTableModel model,String table) throws SQLException {
+    public static void loadData(DefaultTableModel model, String table) throws SQLException {
         model.setRowCount(0);
         conn = ds.getConnection();
-        String sql = "SELECT * FROM "+table+";";
+        String sql = "SELECT * FROM " + table + ";";
         PreparedStatement ps = conn.prepareStatement(sql);
         ResultSet rs = ps.executeQuery();
         Object[] row = new Object[model.getColumnCount()]; 

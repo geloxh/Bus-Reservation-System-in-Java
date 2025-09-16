@@ -232,7 +232,7 @@ public class AdminPanel {
             DatabaseOperations.loadData((DefaultTableModel)reservationTable.getModel(), "Reservations");
             DatabaseOperations.loadData((DefaultTableModel)userTable.getModel(), "Users");
         } catch (SQLException e1) {
-            // TODO Auto-generated catch block
+            JOptionPane.showMessageDialog(frame, "Failed to load data from the database: " + e1.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             e1.printStackTrace();
         }
 
